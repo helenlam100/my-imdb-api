@@ -10,8 +10,21 @@ class MoviesController < ApplicationController
   end
 
   def search
-    @movie = (params["y"] ? Movie.where(year: params["y"]) : Movie.all)
-    @movie = @movie.select { |movie| movie if movie.title.downcase.include?(params["t"].downcase)  } if params["t"]
+    @movie = Movie.all
+
+    if params.has_key?("t")
+      @movie = @movie.select { |movie| movie.title.downcase.include?(params["t"].downcase) }
+    end
+
+    if params.has_key?("y")
+      @movie = @movie.select { |movie| movie.year == params["y"].to_i }
+    end
+
+    if params.has_key?("i")
+      @movie = @movie.select { |movie| movie.id == params["i"].to_i }
+    end
+
+
     render json: @movie
   end
 end
